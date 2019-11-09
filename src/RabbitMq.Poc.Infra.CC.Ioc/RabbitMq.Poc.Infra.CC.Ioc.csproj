@@ -12,5 +12,4 @@
     <ProjectReference Include="..\RabbitMq.Poc.Application\RabbitMq.Poc.Application.csproj" />
     <ProjectReference Include="..\RabbitMq.Poc.Domain\RabbitMq.Poc.Domain.csproj" />
   </ItemGroup>
-
 </Project>

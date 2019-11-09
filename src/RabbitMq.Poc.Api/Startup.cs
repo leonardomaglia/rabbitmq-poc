@@ -2,7 +2,7 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using RabbitMq.Poc.Api.Configurations;
-using RabbitMq.Poc.Application.Events;
+using RabbitMq.Poc.Domain.Events;
 using RabbitMq.Poc.Infra.CC.EventBus;
 using RabbitMq.Poc.Infra.CC.EventBus.Interfaces;
 using RabbitMq.Poc.Infra.CC.Ioc;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-using RabbitMq.Poc.Application.EventsHandlers;
+using RabbitMq.Poc.Domain.EventsHandlers;
 
 namespace RabbitMq.Poc.Api
 {
@@ -56,8 +56,7 @@ namespace RabbitMq.Poc.Api
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-            eventBus
-                .Subscribe<RespostaWS01Event, RespostaWS01EventHandle>();
+            eventBus.Subscribe<TestMessageEvent, TestMessageEventHandle>();
         }
     }
 
@@ -72,23 +71,15 @@ namespace RabbitMq.Poc.Api
                     Uri = new Uri(configuration["CloudAMQP:Uri"].Replace("amqp://", "amqps://"))
                 };
 
-                return new EventBusPersistentConnection(factory,
-                    int.TryParse(configuration["CloudAMQP:BusRetryCount"], out var retryCount) ? retryCount : 5);
+                return new EventBusPersistentConnection(factory);
             });
 
             services.AddSingleton<IEventBus, EventBus>(sp =>
             {
                 var persistentConnection = sp.GetRequiredService<IEventBusPersistentConnection>();
                 var iLifetimeScope = sp.GetRequiredService<ILifetimeScope>();
-                //var logger = sp.GetRequiredService<ILogService>();
 
-                return new EventBus(
-                    persistentConnection,
-                    iLifetimeScope,
-                    //logger,
-                    configuration["CloudAMQP:ServiceName"],
-                    configuration["CloudAMQP:Environment"],
-                    int.TryParse(configuration["BusRetryCount"], out var retryCount) ? retryCount : 5);
+                return new EventBus(persistentConnection, iLifetimeScope, configuration["CloudAMQP:ServiceName"]);
             });
 
             return services;

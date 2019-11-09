@@ -8,6 +8,7 @@ namespace RabbitMq.Poc.Infra.CC.Ioc
         public static void RegisterServices(IServiceCollection services)
         {
             ApplicationModule.RegisterServices(services);
+            DomainModule.RegisterServices(services);
         }
     }
 }

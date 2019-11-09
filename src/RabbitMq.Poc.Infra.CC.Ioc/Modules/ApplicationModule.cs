@@ -1,5 +1,5 @@
-﻿using RabbitMq.Poc.Application.EventsHandlers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using RabbitMq.Poc.Application;
 
 namespace RabbitMq.Poc.Infra.CC.Ioc.Modules
 {
@@ -7,7 +7,7 @@ namespace RabbitMq.Poc.Infra.CC.Ioc.Modules
     {
         public static void RegisterServices(IServiceCollection services)
         {
-            services.AddScoped<RespostaWS01EventHandle>();
+            services.AddScoped<EventPublisher>();
         }
     }
 }

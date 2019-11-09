@@ -1,24 +1,23 @@
-﻿using System;
-using System.Threading.Tasks;
-using RabbitMq.Poc.Application.Events;
+﻿using RabbitMq.Poc.Domain.Events;
 using RabbitMq.Poc.Infra.CC.EventBus.Interfaces;
+using System;
 
-namespace RabbitMq.Poc.Application.EventsHandlers
+namespace RabbitMq.Poc.Domain.EventsHandlers
 {
-    public class RespostaWS01EventHandle
+    public class TestMessageEventHandle
     {
         private readonly IEventBus _eventBus;
 
-        public RespostaWS01EventHandle(IEventBus eventBus)
+        public TestMessageEventHandle(IEventBus eventBus)
         {
             _eventBus = eventBus;
         }
 
-        public async Task Handle(RespostaWS01Event @event)
+        public void Handle(TestMessageEvent @event)
         {
             try
             {
-                Console.WriteLine(@event.Mensagem);
+                Console.WriteLine(@event.Message);
             }
             catch (Exception e)
             {

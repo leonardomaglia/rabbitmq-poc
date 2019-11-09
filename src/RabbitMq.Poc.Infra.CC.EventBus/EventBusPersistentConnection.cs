@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using RabbitMq.Poc.Infra.CC.EventBus.Interfaces;
-using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -11,16 +10,14 @@ namespace RabbitMq.Poc.Infra.CC.EventBus
     public class EventBusPersistentConnection : IEventBusPersistentConnection, IDisposable
     {
         private readonly IConnectionFactory _connectionFactory;
-        private readonly int _retryCount;
         private IConnection _connection;
         private bool _disposed;
 
         private readonly object _syncLock = new object();
 
-        public EventBusPersistentConnection(IConnectionFactory connectionFactory, int retryCount = 5)
+        public EventBusPersistentConnection(IConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-            _retryCount = retryCount;
         }
 
         public bool IsConnected =>
@@ -30,16 +27,7 @@ namespace RabbitMq.Poc.Infra.CC.EventBus
         {
             lock (_syncLock)
             {
-                var connectionPolicy = Policy.Handle<SocketException>()
-                    .Or<BrokerUnreachableException>()
-                    .WaitAndRetry(_retryCount,
-                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
-                            retryAttempt)));
-
-                connectionPolicy.Execute(() =>
-                {
-                    _connection = _connectionFactory.CreateConnection();
-                });
+                _connection = _connectionFactory.CreateConnection();
 
                 if (!IsConnected)
                     return false;
