@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Beblue.Backoffice.Domain\Beblue.Backoffice.Domain.csproj" />
+    <ProjectReference Include="..\RabbitMq.Poc.Domain\RabbitMq.Poc.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
